@@ -1,0 +1,12 @@
+﻿  main.cpp
+c:\users\timth\documents\visual studio 2017\projects\fallen_forever\fallen_forever\game.h(3): fatal error C1083: Cannot open include file: 'SFML/System/Clock.hpp': No such file or directory
+  World.cpp
+c:\users\timth\documents\visual studio 2017\projects\fallen_forever\fallen_forever\world.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\timth\documents\visual studio 2017\projects\fallen_forever\fallen_forever\world.h(4): fatal error C1083: Cannot open include file: 'SFML/System/Clock.hpp': No such file or directory
+  StateMain.cpp
+c:\users\timth\documents\visual studio 2017\projects\fallen_forever\fallen_forever\state.h(6): fatal error C1083: Cannot open include file: 'SFML/Graphics.hpp': No such file or directory
+  State.cpp
+c:\users\timth\documents\visual studio 2017\projects\fallen_forever\fallen_forever\state.h(6): fatal error C1083: Cannot open include file: 'SFML/Graphics.hpp': No such file or directory
+  Game.cpp
+c:\users\timth\documents\visual studio 2017\projects\fallen_forever\fallen_forever\game.h(3): fatal error C1083: Cannot open include file: 'SFML/System/Clock.hpp': No such file or directory
+  Generating Code...

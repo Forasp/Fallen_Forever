@@ -1,0 +1,13 @@
+﻿  World.cpp
+c:\users\timth\source\repos\fallen_forever\fallen_forever\world.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  StateMain.cpp
+  State.cpp
+  Resources.cpp
+  Resource.cpp
+  main.cpp
+  Game.cpp
+c:\users\timth\source\repos\fallen_forever\fallen_forever\world.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  Generating Code...
+     Creating library C:\Users\timth\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.lib and object C:\Users\timth\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.exp
+  Fallen_Forever.vcxproj -> C:\Users\timth\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.exe
+  Fallen_Forever.vcxproj -> C:\Users\timth\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.pdb (Partial PDB)
