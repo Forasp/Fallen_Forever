@@ -4,8 +4,10 @@
 #include "SFML/Graphics.hpp"
 #include <memory>
 #include "Listener.h"
+#include <map>
 
 class World;
+class Messenger;
 
 class Game : public Listener
 {
@@ -17,12 +19,15 @@ public:
 	void ControllerThread();
 	void RenderingThread();
 
+	std::shared_ptr<Messenger> GetMessenger(std::string _MessengerName);
+
 	bool IsActive() { return (mActive || mPhysicsThreadActive || mRenderingThreadActive || mControllerThreadActive); }
 
 	virtual void ReadMessage(Message* _Message);
 
 private:
 	std::shared_ptr<World> mCurrentWorld;
+	std::map<std::string, std::shared_ptr<Messenger>> mMessengers;
 
 	sf::RenderWindow* mRenderWindow;
 

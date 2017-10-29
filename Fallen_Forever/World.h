@@ -1,5 +1,5 @@
 #pragma once
-#include "GlobalDefines.h""
+#include "GlobalDefines.h"
 #include <vector>
 #include "SFML/System/Clock.hpp"
 #include <memory>
@@ -26,7 +26,7 @@ public:
 private:
 	void Initialize() {};
 
-	virtual void CheckControls();
+	virtual void CheckControls(int _OverrideControl = -1);
 	
 	Game* mGame;
 

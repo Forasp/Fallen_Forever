@@ -2,12 +2,18 @@
 #include "World.h"
 #include "SFML/Window/Keyboard.hpp"
 #include "Message.h"
+#include "Messenger.h"
+#include <cassert>
 
 Game::Game(sf::RenderWindow* _RenderWindow)
 {
 	mActive = true;
 
 	mCurrentWorld = std::make_shared<World>(this);
+
+	mMessengers.emplace(std::make_pair("KeyEvents", std::make_shared<Messenger>()));
+
+	GetMessenger("KeyEvents").get()->AddListener(this);
 
 	mRenderWindow = _RenderWindow;
 
@@ -48,7 +54,9 @@ Game::~Game()
 	mRenderWindow->close();
 }
 
-
+/// <summary> 
+/// Primary thread for ticking physics.
+/// </summary>
 void Game::PhysicsThread()
 {
 	mPhysicsThreadActive = true;
@@ -76,6 +84,9 @@ void Game::PhysicsThread()
 	mActive = false;
 }
 
+/// <summary> 
+/// Primary thread for ticking controllers.
+/// </summary>
 void Game::ControllerThread()
 {
 	mControllerThreadActive = true;
@@ -96,6 +107,9 @@ void Game::ControllerThread()
 	mActive = false;
 }
 
+/// <summary> 
+/// Primary rendering thread.
+/// </summary>
 void Game::RenderingThread()
 {
 	mRenderingThreadActive = true;
@@ -120,6 +134,9 @@ void Game::RenderingThread()
 	mActive = false;
 }
 
+/// <summary> 
+/// Interprets messages passed.
+/// </summary>
 void Game::ReadMessage(Message* _Message)
 {
 	switch (_Message->GetMessageType())
@@ -142,6 +159,10 @@ void Game::ReadMessage(Message* _Message)
 	}
 }
 
+/// <summary> 
+/// Checks controls, should only be used with overrides, as the global level shouldn't be
+/// looking for any specific key inputs.
+/// </summary>
 void Game::CheckControls(int _OverrideControl)
 {
 	// -TODO- Implment GLOBAL controls.
@@ -150,4 +171,14 @@ void Game::CheckControls(int _OverrideControl)
 	{
 		mActive = false;
 	}
+}
+
+/// <summary> 
+/// Returns a pointer to the messenger requested
+/// </summary>
+std::shared_ptr<Messenger> Game::GetMessenger(std::string _MessengerName)
+{
+	std::map<std::string, std::shared_ptr<Messenger>>::iterator Result = mMessengers.find(_MessengerName);
+	assert(Result != mMessengers.end());
+	return mMessengers.find(_MessengerName)->second;
 }
