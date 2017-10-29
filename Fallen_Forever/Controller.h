@@ -1,8 +1,9 @@
 #pragma once
+#include "Listener.h"
 
 class GameObject;
 
-class Controller
+class Controller : public Listener
 {
 public:
 	Controller(GameObject* _Parent) { mParent = _Parent; }

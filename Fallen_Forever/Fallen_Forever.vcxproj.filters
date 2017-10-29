@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Legacy\States">
       <UniqueIdentifier>{936b8c39-e8f7-43e1-8121-322817232db1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Messenger">
+      <UniqueIdentifier>{db9b0d00-6585-42bc-aa30-929498a07764}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Messenger">
+      <UniqueIdentifier>{04a985ee-55c1-4169-9ecf-01dce5ef7f07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -53,6 +59,12 @@
     </ClCompile>
     <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Message.cpp">
+      <Filter>Source Files\Messenger</Filter>
+    </ClCompile>
+    <ClCompile Include="Messenger.cpp">
+      <Filter>Source Files\Messenger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +94,15 @@
     </ClInclude>
     <ClInclude Include="Controller.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Header Files\Messenger</Filter>
+    </ClInclude>
+    <ClInclude Include="Listener.h">
+      <Filter>Header Files\Messenger</Filter>
+    </ClInclude>
+    <ClInclude Include="Messenger.h">
+      <Filter>Header Files\Messenger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

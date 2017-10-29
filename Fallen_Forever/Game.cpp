@@ -1,12 +1,13 @@
 #include "Game.h"
 #include "World.h"
 #include "SFML/Window/Keyboard.hpp"
+#include "Message.h"
 
 Game::Game(sf::RenderWindow* _RenderWindow)
 {
 	mActive = true;
 
-	mCurrentWorld = new World(this);
+	mCurrentWorld = std::make_shared<World>(this);
 
 	mRenderWindow = _RenderWindow;
 
@@ -54,7 +55,8 @@ void Game::PhysicsThread()
 
 	while (mActive && mPhysicsThreadActive)
 	{
-		// Always wait for rendering to complete
+		// Always wait for rendering to complete -TODO- Double buffer all rendering objects so we can
+		// skip this. -TODO- 
 		while (mRendering)
 		{
 			std::this_thread::yield();
@@ -63,7 +65,7 @@ void Game::PhysicsThread()
 		sf::Time CurrentTime = mClock.getElapsedTime();
 
 		// Tick Physics
-		mCurrentWorld->Tick(CurrentTime - mLastPhysicsTime);
+		mCurrentWorld.get()->Tick(CurrentTime - mLastPhysicsTime);
 
 		mLastPhysicsTime = CurrentTime;
 
@@ -85,7 +87,7 @@ void Game::ControllerThread()
 		sf::Time CurrentTime = mClock.getElapsedTime();
 
 		// Tick the controller
-		mCurrentWorld->ControllerTick(CurrentTime - mLastControllerTime);
+		mCurrentWorld.get()->ControllerTick(CurrentTime - mLastControllerTime);
 
 		mLastControllerTime = CurrentTime;
 	}
@@ -100,7 +102,7 @@ void Game::RenderingThread()
 
 	while (mActive && mRenderingThreadActive)
 	{
-		// Always wait for rendering to complete
+		// Always wait for physics to complete at least one pass
 		while (!mRendering)
 		{
 			std::this_thread::yield();
@@ -108,7 +110,7 @@ void Game::RenderingThread()
 
 		// Tick Rendering
 		mRenderWindow->clear();
-		mCurrentWorld->RenderTick();
+		mCurrentWorld.get()->RenderTick();
 		mRenderWindow->display();
 
 		mRendering = false;
@@ -118,9 +120,33 @@ void Game::RenderingThread()
 	mActive = false;
 }
 
-void Game::CheckControls()
+void Game::ReadMessage(Message* _Message)
 {
-	if (mActive && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	switch (_Message->GetMessageType())
+	{
+		case MESSAGE_TYPE_INVALID:
+			return;
+			break;
+		case MESSAGE_TYPE_INPUT:
+			CheckControls(_Message->GetMessageDouble());
+			break;
+		case MESSAGE_TYPE_DOUBLE:
+
+			break;
+		case MESSAGE_TYPE_STRING:
+
+			break;
+		default:
+
+			break;
+	}
+}
+
+void Game::CheckControls(int _OverrideControl)
+{
+	// -TODO- Implment GLOBAL controls.
+	//if (mActive && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	if (mActive && _OverrideControl == sf::Keyboard::Escape)
 	{
 		mActive = false;
 	}

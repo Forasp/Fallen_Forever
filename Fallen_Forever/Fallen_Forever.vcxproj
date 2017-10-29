@@ -153,6 +153,8 @@
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Message.cpp" />
+    <ClCompile Include="Messenger.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="State.cpp" />
@@ -164,6 +166,9 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GlobalDefines.h" />
+    <ClInclude Include="Listener.h" />
+    <ClInclude Include="Message.h" />
+    <ClInclude Include="Messenger.h" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="State.h" />

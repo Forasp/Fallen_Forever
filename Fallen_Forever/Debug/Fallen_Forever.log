@@ -1,13 +1,8 @@
-﻿  World.cpp
+﻿  Game.cpp
 c:\users\timth\source\repos\fallen_forever\fallen_forever\world.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  StateMain.cpp
-  State.cpp
-  Resources.cpp
-  Resource.cpp
-  main.cpp
-  Game.cpp
-c:\users\timth\source\repos\fallen_forever\fallen_forever\world.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\timth\source\repos\fallen_forever\fallen_forever\game.cpp(131): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
   Generating Code...
-     Creating library C:\Users\timth\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.lib and object C:\Users\timth\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.exp
+  Skipping... (no relevant changes detected)
+  World.cpp
   Fallen_Forever.vcxproj -> C:\Users\timth\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.exe
   Fallen_Forever.vcxproj -> C:\Users\timth\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.pdb (Partial PDB)

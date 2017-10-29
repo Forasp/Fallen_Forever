@@ -14,21 +14,29 @@ World::World(Game* _Game)
 
 void World::RenderTick()
 {
-	for (std::vector<GameObject*> goVector : mGameObjects)
+	for (std::vector<std::shared_ptr<GameObject>> goVector : mGameObjects)
 	{
-		for (GameObject* go : goVector)
+		for (std::shared_ptr<GameObject> go : goVector)
 		{
-			go->RenderTick();
+			go.get()->RenderTick();
 		}
 	}
 }
 
 void World::Tick(sf::Time _DeltaTime)
 {
-	mWorldRoot->Tick(_DeltaTime);
+	mWorldRoot.get()->Tick(_DeltaTime);
 }
 
 void World::ControllerTick(sf::Time _DeltaTime)
 {
-	mWorldRoot->ControllerTick(_DeltaTime);
+	mWorldRoot.get()->ControllerTick(_DeltaTime);
+}
+
+void World::CheckControls()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	{
+		// Pass message to quit
+	}
 }

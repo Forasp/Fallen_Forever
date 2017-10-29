@@ -1,8 +1,9 @@
 #pragma once
+#include "Listener.h"
 
 class Contrller;
 
-class GameObject
+class GameObject : public Listener
 {
 public:
 	GameObject() {}

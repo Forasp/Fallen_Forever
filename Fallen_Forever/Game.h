@@ -2,10 +2,12 @@
 #include <thread>
 #include "SFML/System/Clock.hpp"
 #include "SFML/Graphics.hpp"
+#include <memory>
+#include "Listener.h"
 
 class World;
 
-class Game
+class Game : public Listener
 {
 public:
 	Game(sf::RenderWindow* _RenderWindow);
@@ -17,8 +19,10 @@ public:
 
 	bool IsActive() { return (mActive || mPhysicsThreadActive || mRenderingThreadActive || mControllerThreadActive); }
 
+	virtual void ReadMessage(Message* _Message);
+
 private:
-	World* mCurrentWorld;
+	std::shared_ptr<World> mCurrentWorld;
 
 	sf::RenderWindow* mRenderWindow;
 
@@ -37,5 +41,5 @@ private:
 	sf::Time mLastPhysicsTime;
 	sf::Time mLastControllerTime;
 
-	void CheckControls();
+	virtual void CheckControls(int _OverrideControl = -1);
 };

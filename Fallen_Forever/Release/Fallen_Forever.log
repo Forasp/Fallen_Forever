@@ -1,1 +1,19 @@
-﻿  Fallen_Forever.vcxproj -> C:\Users\timth\documents\visual studio 2017\Projects\Fallen_Forever\Release\Fallen_Forever.exe
+﻿  Game.cpp
+c:\users\timth\source\repos\fallen_forever\fallen_forever\World.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+Game.cpp(131): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  main.cpp
+  Message.cpp
+  Messenger.cpp
+  Resource.cpp
+  Resources.cpp
+  State.cpp
+  StateMain.cpp
+  World.cpp
+c:\users\timth\source\repos\fallen_forever\fallen_forever\World.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     Creating library C:\Users\timth\Source\Repos\Fallen_Forever\Release\Fallen_Forever.lib and object C:\Users\timth\Source\Repos\Fallen_Forever\Release\Fallen_Forever.exp
+  Generating code
+  324 of 325 functions (99.7%) were compiled, the rest were copied from previous compilation.
+    227 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  Fallen_Forever.vcxproj -> C:\Users\timth\Source\Repos\Fallen_Forever\Release\Fallen_Forever.exe

@@ -2,13 +2,15 @@
 #include "GlobalDefines.h""
 #include <vector>
 #include "SFML/System/Clock.hpp"
+#include <memory>
+#include "Listener.h"
 
 class Game;
 class GameObject;
 class ResourceHolder;
 class Controller;
 
-class World
+class World : public Listener
 {
 public:
 	World(Game* _Game);
@@ -18,18 +20,20 @@ public:
 	void RenderTick();
 	void ControllerTick(sf::Time _DeltaTime);
 
-	GameObject* GetWorldRoot(GameObject*) { return mWorldRoot; }
-	ResourceHolder* GetResourceHolder(ResourceHolder*) { return mResourceHolder; }
+	std::shared_ptr<GameObject> GetWorldRoot() { return mWorldRoot; }
+	std::shared_ptr<ResourceHolder> GetResourceHolder() { return mResourceHolder; }
 
 private:
 	void Initialize() {};
+
+	virtual void CheckControls();
 	
 	Game* mGame;
 
-	GameObject* mWorldRoot;
+	std::shared_ptr<GameObject> mWorldRoot;
 
-	ResourceHolder* mResourceHolder;
+	std::shared_ptr<ResourceHolder> mResourceHolder;
 
-	std::vector<std::vector<GameObject*>> mGameObjects;
+	std::vector<std::vector<std::shared_ptr<GameObject>>> mGameObjects;
 
 };
