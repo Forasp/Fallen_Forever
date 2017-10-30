@@ -16,12 +16,14 @@ public:
 	World(Game* _Game);
 	~World() {};
 	
-	void Tick(sf::Time _DeltaTime);
-	void RenderTick();
-	void ControllerTick(sf::Time _DeltaTime);
+	virtual void Tick(sf::Time _DeltaTime);
+	virtual void RenderTick();
+	virtual void ControllerTick(sf::Time _DeltaTime);
 
-	std::shared_ptr<GameObject> GetWorldRoot() { return mWorldRoot; }
-	std::shared_ptr<ResourceHolder> GetResourceHolder() { return mResourceHolder; }
+	virtual void ReadMessage(Message* _Message);
+
+	virtual std::shared_ptr<GameObject> GetWorldRoot() { return mWorldRoot; }
+	virtual std::shared_ptr<ResourceHolder> GetResourceHolder() { return mResourceHolder; }
 
 private:
 	void Initialize() {};

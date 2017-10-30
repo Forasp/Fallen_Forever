@@ -35,10 +35,26 @@ void Messenger::RemoveListener(Listener* _Listener)
 /// <summary> 
 /// Receive a message and distribute to all listeners.
 /// </summary>
-void Messenger::ReceiveMessage(Message _Message)
+void Messenger::ReceiveMessage(std::shared_ptr<Message> _Message)
 {
-	for (Listener* i : mListeners)
+	// lock the queue when pushing or popping.
+	mWritingMessageLock.lock();
+	mMessageQueue.push(_Message);
+	mWritingMessageLock.unlock();
+}
+
+void Messenger::TickMessenger()
+{
+	while (mMessageQueue.size() > 0)
 	{
-		i->ReadMessage(&_Message);
+		for (Listener* i : mListeners)
+		{
+			i->ReadMessage(mMessageQueue.front().get());
+		}
+		
+		// lock the queue when pushing or popping.
+		mWritingMessageLock.lock();
+		mMessageQueue.pop();
+		mWritingMessageLock.unlock();
 	}
 }

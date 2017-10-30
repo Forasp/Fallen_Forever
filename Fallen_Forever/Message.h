@@ -5,6 +5,7 @@
 #define MESSAGE_TYPE_STRING 1
 #define MESSAGE_TYPE_DOUBLE 2
 #define MESSAGE_TYPE_INPUT  3
+#define MESSAGE_TYPE_QUIT   4
 
 class Message
 {

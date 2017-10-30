@@ -4,16 +4,19 @@
 #include "Message.h"
 #include "Messenger.h"
 #include <cassert>
+#include <iostream>
 
 Game::Game(sf::RenderWindow* _RenderWindow)
 {
 	mActive = true;
 
-	mCurrentWorld = std::make_shared<World>(this);
-
 	mMessengers.emplace(std::make_pair("KeyEvents", std::make_shared<Messenger>()));
+	mMessengers.emplace(std::make_pair("GlobalEvents", std::make_shared<Messenger>()));
 
 	GetMessenger("KeyEvents").get()->AddListener(this);
+	GetMessenger("GlobalEvents").get()->AddListener(this);
+
+	mCurrentWorld = std::make_shared<World>(this);
 
 	mRenderWindow = _RenderWindow;
 
@@ -22,16 +25,17 @@ Game::Game(sf::RenderWindow* _RenderWindow)
 	mLastPhysicsTime	= mClock.getElapsedTime();
 	mLastControllerTime = mClock.getElapsedTime();
 
-	mPhysicsThread		= std::thread(&Game::PhysicsThread, this);
-	mControllerThread	= std::thread(&Game::ControllerThread, this);
-	mRenderingThread	= std::thread(&Game::RenderingThread, this);
+	mPhysicsThread		= std::thread(&Game::PhysicsThread,		this);
+	mControllerThread	= std::thread(&Game::ControllerThread,	this);
+	mRenderingThread	= std::thread(&Game::RenderingThread,	this);
+	mMessagingThread	= std::thread(&Game::MessagingThread,	this);
 }
 
 Game::~Game()
 {
 	mActive = false;
 
-	while (mPhysicsThreadActive || mRenderingThreadActive || mControllerThreadActive)
+	while (mPhysicsThreadActive || mRenderingThreadActive || mControllerThreadActive || mMessagingThreadActive)
 	{
 		std::this_thread::yield();
 	}
@@ -49,6 +53,11 @@ Game::~Game()
 	if (mRenderingThread.joinable())
 	{
 		mRenderingThread.join();
+	}
+
+	if (mMessagingThread.joinable())
+	{
+		mMessagingThread.join();
 	}
 
 	mRenderWindow->close();
@@ -114,6 +123,9 @@ void Game::RenderingThread()
 {
 	mRenderingThreadActive = true;
 
+	// Pick up the window inactive so no other threads can handle it.
+	mRenderWindow->setActive(true);
+
 	while (mActive && mRenderingThreadActive)
 	{
 		// Always wait for physics to complete at least one pass
@@ -122,15 +134,38 @@ void Game::RenderingThread()
 			std::this_thread::yield();
 		}
 
-		// Tick Rendering
-		mRenderWindow->clear();
+		// Clear screen with black
+		mRenderWindow->clear(sf::Color(0,0,0,255));
+
+		// Tick Rendering through world's scene graph
 		mCurrentWorld.get()->RenderTick();
+
+		// Throw the buffer to display!
 		mRenderWindow->display();
 
 		mRendering = false;
 	}
 
 	mRenderingThreadActive = false;
+	mActive = false;
+}
+
+/// <summary> 
+/// Primary Messaging thread.
+/// </summary>
+void Game::MessagingThread()
+{
+	mMessagingThreadActive = true;
+
+	while (mActive && mMessagingThreadActive)
+	{
+		for (std::pair<std::string, std::shared_ptr<Messenger>> it : mMessengers)
+		{
+			it.second->TickMessenger();
+		}
+	}
+
+	mMessagingThreadActive = false;
 	mActive = false;
 }
 
@@ -153,6 +188,10 @@ void Game::ReadMessage(Message* _Message)
 		case MESSAGE_TYPE_STRING:
 
 			break;
+		case MESSAGE_TYPE_QUIT:
+			std::cout << _Message->GetMessageString(); // -TODO- Implement a logging file so this can be written to it on exit.
+			EndGame(); // Quit
+			break;
 		default:
 
 			break;
@@ -165,12 +204,7 @@ void Game::ReadMessage(Message* _Message)
 /// </summary>
 void Game::CheckControls(int _OverrideControl)
 {
-	// -TODO- Implment GLOBAL controls.
-	//if (mActive && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-	if (mActive && _OverrideControl == sf::Keyboard::Escape)
-	{
-		mActive = false;
-	}
+	// -TODO- Implment any GLOBAL controls here.
 }
 
 /// <summary> 

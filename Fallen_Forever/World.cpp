@@ -3,12 +3,14 @@
 #include "GameObject.h"
 #include "Controller.h"
 #include "Messenger.h"
+#include "Message.h"
 
 World::World(Game* _Game)
 {
 	mGame = _Game;
 
 	mGameObjects.resize(NUMBER_OF_LAYERS);
+	mGame->GetMessenger("KeyEvents").get()->AddListener(this);
 
 	// Construct our world here.
 }
@@ -49,9 +51,33 @@ void World::ControllerTick(sf::Time _DeltaTime)
 /// </summary>
 void World::CheckControls(int _OverrideControl)
 {
-	// If the escape key has been pressed, pass the message onto the key events.
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || _OverrideControl == sf::Keyboard::Escape)
+	if (_OverrideControl == sf::Keyboard::Escape)
 	{
-		mGame->GetMessenger("KeyEvents").get()->ReceiveMessage(Message(MESSAGE_TYPE_INPUT, sf::Keyboard::Escape));
+		mGame->GetMessenger("GlobalEvents").get()->ReceiveMessage(std::make_shared<Message>(MESSAGE_TYPE_QUIT, "Escape key pressed."));
+	}
+}
+
+/// <summary> 
+/// Interprets messages passed.
+/// </summary>
+void World::ReadMessage(Message* _Message)
+{
+	switch (_Message->GetMessageType())
+	{
+	case MESSAGE_TYPE_INVALID:
+		return;
+		break;
+	case MESSAGE_TYPE_INPUT:
+		CheckControls(_Message->GetMessageDouble());
+		break;
+	case MESSAGE_TYPE_DOUBLE:
+
+		break;
+	case MESSAGE_TYPE_STRING:
+
+		break;
+	default:
+
+		break;
 	}
 }

@@ -18,6 +18,9 @@ public:
 	void PhysicsThread();
 	void ControllerThread();
 	void RenderingThread();
+	void MessagingThread();
+
+	void EndGame() { mActive = false; }
 
 	std::shared_ptr<Messenger> GetMessenger(std::string _MessengerName);
 
@@ -36,12 +39,14 @@ private:
 	std::thread mPhysicsThread;
 	std::thread mControllerThread;
 	std::thread mRenderingThread;
+	std::thread mMessagingThread;
 
 	bool mRendering;
 	bool mActive;
 	bool mPhysicsThreadActive;
 	bool mRenderingThreadActive;
 	bool mControllerThreadActive;
+	bool mMessagingThreadActive;
 
 	sf::Time mLastPhysicsTime;
 	sf::Time mLastControllerTime;
