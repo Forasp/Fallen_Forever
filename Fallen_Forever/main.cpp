@@ -26,7 +26,7 @@ int main()
 					GameInstance->EndGame();
 					break;
 				case sf::Event::KeyPressed:
-					GameInstance->GetMessenger("KeyEvents").get()->ReceiveMessage(std::make_shared<Message>(MESSAGE_TYPE_INPUT, WindowEvent.key.code));
+					GameInstance->QueueMessage("KeyEvents", std::make_unique<Message>(MESSAGE_TYPE_INPUT, WindowEvent.key.code));
 					break;
 				case sf::Event::Resized:
 					WindowInstance.setSize(sf::Vector2u(WindowEvent.size.width, WindowEvent.size.height));

@@ -159,6 +159,15 @@ void Game::MessagingThread()
 
 	while (mActive && mMessagingThreadActive)
 	{
+		// -TODO- Weigh whether these warrant two independant threads.
+		// While the message queue is not empty, give messages to messengers.
+		while (mMessageQueue.size() > 0)
+		{
+			GetMessenger(mMessageQueue.front().first).get()->ReceiveMessage(std::move(mMessageQueue.front().second));
+			mMessageQueue.pop();
+		}
+
+		// For all messengers, tick.
 		for (std::pair<std::string, std::shared_ptr<Messenger>> it : mMessengers)
 		{
 			it.second->TickMessenger();
@@ -215,4 +224,10 @@ std::shared_ptr<Messenger> Game::GetMessenger(std::string _MessengerName)
 	std::map<std::string, std::shared_ptr<Messenger>>::iterator Result = mMessengers.find(_MessengerName);
 	assert(Result != mMessengers.end());
 	return mMessengers.find(_MessengerName)->second;
+}
+
+
+void Game::QueueMessage(std::string _MessengerName, std::unique_ptr<Message> _Message)
+{
+	mMessageQueue.push(std::make_pair(_MessengerName, std::move(_Message)));
 }

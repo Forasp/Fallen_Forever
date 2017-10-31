@@ -53,7 +53,7 @@ void World::CheckControls(int _OverrideControl)
 {
 	if (_OverrideControl == sf::Keyboard::Escape)
 	{
-		mGame->GetMessenger("GlobalEvents").get()->ReceiveMessage(std::make_shared<Message>(MESSAGE_TYPE_QUIT, "Escape key pressed."));
+		mGame->QueueMessage("GlobalEvents", std::make_unique<Message>(MESSAGE_TYPE_QUIT, "Escape key pressed."));
 	}
 }
 

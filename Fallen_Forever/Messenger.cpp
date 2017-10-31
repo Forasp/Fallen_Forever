@@ -1,4 +1,5 @@
 #include "Messenger.h"
+#include "Message.h"
 
 /// <summary> 
 /// Adds a listener to the Messenger. 
@@ -35,11 +36,11 @@ void Messenger::RemoveListener(Listener* _Listener)
 /// <summary> 
 /// Receive a message and distribute to all listeners.
 /// </summary>
-void Messenger::ReceiveMessage(std::shared_ptr<Message> _Message)
+void Messenger::ReceiveMessage(std::unique_ptr<Message> _Message)
 {
 	// lock the queue when pushing or popping.
 	mWritingMessageLock.lock();
-	mMessageQueue.push(_Message);
+	mMessageQueue.push(std::move(_Message));
 	mWritingMessageLock.unlock();
 }
 

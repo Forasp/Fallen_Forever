@@ -5,9 +5,11 @@
 #include <memory>
 #include "Listener.h"
 #include <map>
+#include <queue>
 
 class World;
 class Messenger;
+class Message;
 
 class Game : public Listener
 {
@@ -24,6 +26,8 @@ public:
 
 	std::shared_ptr<Messenger> GetMessenger(std::string _MessengerName);
 
+	void QueueMessage(std::string _MessengerName, std::unique_ptr<Message> _Message);
+
 	bool IsActive() { return (mActive || mPhysicsThreadActive || mRenderingThreadActive || mControllerThreadActive); }
 
 	virtual void ReadMessage(Message* _Message);
@@ -31,6 +35,7 @@ public:
 private:
 	std::shared_ptr<World> mCurrentWorld;
 	std::map<std::string, std::shared_ptr<Messenger>> mMessengers;
+	std::queue<std::pair<std::string, std::unique_ptr<Message>>> mMessageQueue;
 
 	sf::RenderWindow* mRenderWindow;
 
