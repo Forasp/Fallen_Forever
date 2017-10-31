@@ -24,6 +24,9 @@ Game::Game(sf::RenderWindow* _RenderWindow)
 
 	mLastPhysicsTime	= mClock.getElapsedTime();
 	mLastControllerTime = mClock.getElapsedTime();
+	mLastRenderTime		= mClock.getElapsedTime();
+	mLastMessagingTime	= mClock.getElapsedTime();
+
 
 	mPhysicsThread		= std::thread(&Game::PhysicsThread,		this);
 	mControllerThread	= std::thread(&Game::ControllerThread,	this);
@@ -37,7 +40,7 @@ Game::~Game()
 
 	while (mPhysicsThreadActive || mRenderingThreadActive || mControllerThreadActive || mMessagingThreadActive)
 	{
-		std::this_thread::yield();
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 
 	if (mPhysicsThread.joinable())
@@ -76,17 +79,23 @@ void Game::PhysicsThread()
 		// skip this. -TODO- 
 		while (mRendering)
 		{
-			std::this_thread::yield();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
 		sf::Time CurrentTime = mClock.getElapsedTime();
-
-		// Tick Physics
-		mCurrentWorld.get()->Tick(CurrentTime - mLastPhysicsTime);
-
+		sf::Time Elapsedtime = CurrentTime - mLastPhysicsTime;
 		mLastPhysicsTime = CurrentTime;
 
+		// Tick Physics
+		mCurrentWorld.get()->Tick(Elapsedtime);
+
 		mRendering = true;
+
+		// Tick no faster than once every 10ms
+		if (Elapsedtime.asMilliseconds() < 10)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(Elapsedtime.asMilliseconds() - 10));
+		}
 	}
 
 	mPhysicsThreadActive = false;
@@ -105,11 +114,17 @@ void Game::ControllerThread()
 		CheckControls();
 
 		sf::Time CurrentTime = mClock.getElapsedTime();
+		sf::Time Elapsedtime = CurrentTime - mLastControllerTime;
+		mLastControllerTime = CurrentTime;
 
 		// Tick the controller
-		mCurrentWorld.get()->ControllerTick(CurrentTime - mLastControllerTime);
+		mCurrentWorld.get()->ControllerTick(Elapsedtime);
 
-		mLastControllerTime = CurrentTime;
+		// Tick no faster than once every 50ms
+		if (Elapsedtime.asMilliseconds() < 50)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(Elapsedtime.asMilliseconds() - 50));
+		}
 	}
 
 	mControllerThreadActive = false;
@@ -131,8 +146,12 @@ void Game::RenderingThread()
 		// Always wait for physics to complete at least one pass
 		while (!mRendering)
 		{
-			std::this_thread::yield();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
+
+		sf::Time CurrentTime = mClock.getElapsedTime();
+		sf::Time Elapsedtime = CurrentTime - mLastRenderTime;
+		mLastRenderTime = CurrentTime;
 
 		// Clear screen with black
 		mRenderWindow->clear(sf::Color(0,0,0,255));
@@ -144,6 +163,12 @@ void Game::RenderingThread()
 		mRenderWindow->display();
 
 		mRendering = false;
+
+		// Tick no faster than once every 4ms
+		if (Elapsedtime.asMilliseconds() < 4)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(Elapsedtime.asMilliseconds() - 4));
+		}
 	}
 
 	mRenderingThreadActive = false;
@@ -159,6 +184,10 @@ void Game::MessagingThread()
 
 	while (mActive && mMessagingThreadActive)
 	{
+		sf::Time CurrentTime = mClock.getElapsedTime();
+		sf::Time Elapsedtime = CurrentTime - mLastMessagingTime;
+		mLastMessagingTime = CurrentTime;
+
 		// -TODO- Weigh whether these warrant two independant threads.
 		// While the message queue is not empty, give messages to messengers.
 		while (mMessageQueue.size() > 0)
@@ -170,7 +199,13 @@ void Game::MessagingThread()
 		// For all messengers, tick.
 		for (std::pair<std::string, std::shared_ptr<Messenger>> it : mMessengers)
 		{
-			it.second->TickMessenger();
+			it.second.get()->TickMessenger();
+		}
+
+		// Tick no faster than once every 4ms
+		if (Elapsedtime.asMilliseconds() < 50)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(Elapsedtime.asMilliseconds() - 50));
 		}
 	}
 

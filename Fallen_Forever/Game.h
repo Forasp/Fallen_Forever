@@ -55,6 +55,8 @@ private:
 
 	sf::Time mLastPhysicsTime;
 	sf::Time mLastControllerTime;
+	sf::Time mLastRenderTime;
+	sf::Time mLastMessagingTime;
 
 	virtual void CheckControls(int _OverrideControl = -1);
 };
