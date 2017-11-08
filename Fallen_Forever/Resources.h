@@ -4,7 +4,16 @@
 #include <memory>
 #include <stdexcept>
 #include <cassert>
+#include <SFML/Graphics/Texture.hpp>
 
+namespace FFTex
+{
+	enum ID
+	{
+		Crate_1,
+		Crate_2
+	};
+}
 
 template<typename Resource, typename Identifier>
 
@@ -19,10 +28,12 @@ public:
 	void LoadResource(Identifier _ID, const std::string& _Filename);
 
 	template<typename Parameters>
-	void LoadResource(Identifier _ID, const std::string& _Filename, const Parameters& secondParam);
+	void LoadResource(Identifier _ID, const std::string& _Filename, const Parameters& _SecondParam);
 
 	Resource& GetResource(Identifier _ID);
 	const Resource& GetResource(Identifier _ID);
 };
+
+typedef Resources<sf::Texture, FFTex::ID> TextureResources;
 
 #include "Resources.inl"

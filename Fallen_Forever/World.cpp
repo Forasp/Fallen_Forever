@@ -18,13 +18,13 @@ World::World(Game* _Game)
 /// <summary> 
 /// Calls RenderTick on graphics scenegraph.
 /// </summary>
-void World::RenderTick()
+void World::RenderTick(sf::RenderWindow* _RenderWindow)
 {
 	for (std::vector<std::shared_ptr<GameObject>> goVector : mGameObjects)
 	{
 		for (std::shared_ptr<GameObject> go : goVector)
 		{
-			go.get()->RenderTick();
+			go.get()->RenderTick(_RenderWindow);
 		}
 	}
 }
@@ -80,4 +80,31 @@ void World::ReadMessage(Message* _Message)
 
 		break;
 	}
+}
+
+/// <summary> 
+/// Adds a reference to a game object into our rendering list
+/// </summary>
+void World::AddGlobalReferenceToObject(std::shared_ptr<GameObject> _GameObject, int _Layer)
+{
+	// Early out if invalid layer or _GameObject is null pointer
+	if (_Layer >= NUMBER_OF_LAYERS || _GameObject == nullptr)
+	{
+		return;
+	}
+	
+	// Early out if matching game object found
+	for (std::vector<std::shared_ptr<GameObject>> outer_iterator : mGameObjects)
+	{
+		for (std::shared_ptr<GameObject> inner_iterator : outer_iterator)
+		{
+			if (inner_iterator == _GameObject)
+			{
+				return;
+			}
+		}
+	}
+
+	// Add object to appropriate layer.
+	mGameObjects[_Layer].push_back(_GameObject);
 }

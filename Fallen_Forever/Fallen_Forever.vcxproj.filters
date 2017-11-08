@@ -66,6 +66,9 @@
     <ClCompile Include="Messenger.cpp">
       <Filter>Source Files\Messenger</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StateMain.h">

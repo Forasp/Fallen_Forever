@@ -14,7 +14,7 @@ class Message;
 class Game : public Listener
 {
 public:
-	Game(sf::RenderWindow* _RenderWindow);
+	Game(sf::RenderWindow* _RenderWindow, bool _CoupleRenderingToPhysics = false);
 	~Game();
 
 	void PhysicsThread();
@@ -52,6 +52,7 @@ private:
 	bool mRenderingThreadActive;
 	bool mControllerThreadActive;
 	bool mMessagingThreadActive;
+	bool mCoupleRenderingToPhysics;
 
 	sf::Time mLastPhysicsTime;
 	sf::Time mLastControllerTime;

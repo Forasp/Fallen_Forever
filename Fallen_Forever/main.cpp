@@ -7,6 +7,8 @@ int main()
 	// Create window instance
 	sf::RenderWindow WindowInstance(sf::VideoMode(1024, 768), "Fallen Forever");
 
+	WindowInstance.setFramerateLimit(60);
+
 	// Set the window inactive so another thread can pick it up.
 	WindowInstance.setActive(false);
 

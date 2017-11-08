@@ -2,6 +2,7 @@
 #include "GlobalDefines.h"
 #include <vector>
 #include "SFML/System/Clock.hpp"
+#include "SFML/Graphics/RenderWindow.hpp"
 #include <memory>
 #include "Listener.h"
 
@@ -17,13 +18,14 @@ public:
 	~World() {};
 	
 	virtual void Tick(sf::Time _DeltaTime);
-	virtual void RenderTick();
+	virtual void RenderTick(sf::RenderWindow* _RenderWindow);
 	virtual void ControllerTick(sf::Time _DeltaTime);
 
 	virtual void ReadMessage(Message* _Message);
 
 	virtual std::shared_ptr<GameObject> GetWorldRoot() { return mWorldRoot; }
 	virtual std::shared_ptr<ResourceHolder> GetResourceHolder() { return mResourceHolder; }
+	virtual void AddGlobalReferenceToObject(std::shared_ptr<GameObject> _GameObject, int _Layer);
 
 private:
 	void Initialize() {};

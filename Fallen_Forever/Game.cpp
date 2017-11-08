@@ -6,9 +6,10 @@
 #include <cassert>
 #include <iostream>
 
-Game::Game(sf::RenderWindow* _RenderWindow)
+Game::Game(sf::RenderWindow* _RenderWindow, bool _CoupleRenderingToPhysics)
 {
 	mActive = true;
+	mCoupleRenderingToPhysics = _CoupleRenderingToPhysics;
 
 	mMessengers.emplace(std::make_pair("KeyEvents", std::make_shared<Messenger>()));
 	mMessengers.emplace(std::make_pair("GlobalEvents", std::make_shared<Messenger>()));
@@ -77,7 +78,7 @@ void Game::PhysicsThread()
 	{
 		// Always wait for rendering to complete -TODO- Double buffer all rendering objects so we can
 		// skip this. -TODO- 
-		while (mRendering)
+		while (mCoupleRenderingToPhysics && mRendering)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
@@ -94,7 +95,7 @@ void Game::PhysicsThread()
 		// Tick no faster than once every 10ms
 		if (Elapsedtime.asMilliseconds() < 10)
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(Elapsedtime.asMilliseconds() - 10));
+			std::this_thread::sleep_for(std::chrono::milliseconds(10 - Elapsedtime.asMilliseconds()));
 		}
 	}
 
@@ -123,7 +124,7 @@ void Game::ControllerThread()
 		// Tick no faster than once every 50ms
 		if (Elapsedtime.asMilliseconds() < 50)
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(Elapsedtime.asMilliseconds() - 50));
+			std::this_thread::sleep_for(std::chrono::milliseconds(50 - Elapsedtime.asMilliseconds()));
 		}
 	}
 
@@ -144,7 +145,7 @@ void Game::RenderingThread()
 	while (mActive && mRenderingThreadActive)
 	{
 		// Always wait for physics to complete at least one pass
-		while (!mRendering)
+		while (mCoupleRenderingToPhysics && !mRendering)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
@@ -157,17 +158,17 @@ void Game::RenderingThread()
 		mRenderWindow->clear(sf::Color(0,0,0,255));
 
 		// Tick Rendering through world's scene graph
-		mCurrentWorld.get()->RenderTick();
+		mCurrentWorld.get()->RenderTick(mRenderWindow);
 
 		// Throw the buffer to display!
 		mRenderWindow->display();
 
 		mRendering = false;
 
-		// Tick no faster than once every 4ms
-		if (Elapsedtime.asMilliseconds() < 4)
+		// Tick no faster than once every 10ms
+		if (Elapsedtime.asMilliseconds() < 10)
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(Elapsedtime.asMilliseconds() - 4));
+			std::this_thread::sleep_for(std::chrono::milliseconds(10 - Elapsedtime.asMilliseconds()));
 		}
 	}
 
@@ -202,10 +203,10 @@ void Game::MessagingThread()
 			it.second.get()->TickMessenger();
 		}
 
-		// Tick no faster than once every 4ms
+		// Tick no faster than once every 50ms
 		if (Elapsedtime.asMilliseconds() < 50)
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(Elapsedtime.asMilliseconds() - 50));
+			std::this_thread::sleep_for(std::chrono::milliseconds(50 - Elapsedtime.asMilliseconds()));
 		}
 	}
 
