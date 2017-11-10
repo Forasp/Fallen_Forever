@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Message.h"
 #include "Messenger.h"
+#include "SFML/System/Sleep.hpp"
 
 int main()
 {
@@ -36,7 +37,7 @@ int main()
 			}
 		}
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		sf::sleep(sf::milliseconds(100));
 	}
 
 	return 0;

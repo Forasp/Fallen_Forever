@@ -10,18 +10,22 @@
 #include "Resources.h"
 
 class Controller;
+class Game;
 
 class GameObject : public Listener, public sf::Transformable
 {
 public:
-	GameObject() { mRenderStates = sf::RenderStates::Default; }
-	~GameObject() {}
-	void RenderTick(sf::RenderWindow* _RenderWindow);
-	void Tick(sf::Time _DeltaTime) {}
-	void ControllerTick(sf::Time _DeltaTime) {}
-	void SetController(Controller* _Controller) {}
-	Controller* GetController() { return mController; }
-	void SetTexResources(TextureResources* _ResourceHolder);
+	GameObject() { mRenderStates = sf::RenderStates::Default; mAddedToRenderer = false; }
+	~GameObject();
+	virtual void RenderTick(sf::RenderWindow* _RenderWindow);
+	virtual void Tick(sf::Time _DeltaTime);
+	virtual void ControllerTick(sf::Time _DeltaTime) {}
+	virtual void SetController(Controller* _Controller) {}
+	virtual Controller* GetController() { return mController; }
+	virtual void SetTexResources(TextureResources* _ResourceHolder);
+	virtual std::pair<double, double> GetPosition() { return mPosition; }
+	virtual std::pair<double, double> GetVelocity() { return mVelocity; }
+	virtual std::pair<double, double> GetSize() { return mSize; }
 
 protected:
 	std::pair<double, double> mPosition;				// The object's position
@@ -34,6 +38,7 @@ protected:
 	double mHardness;									// The Object's Resistance
 	
 	bool mPhysical;										// Whether or not the Object can collide.
+	bool mAddedToRenderer;								// Whether or not the object has been handed to the renderer yet.
 
 	int  mLayer;										// The Object's layer (for rendering and physics)
 
@@ -44,6 +49,8 @@ protected:
 
 	TextureResources* mResourceHolder;					// A pointer to resource holder for object texture
 
-private:
+	Game* mGame;										// A Pointer to the Game.
+
+protected:
 	Controller* mController;
 };

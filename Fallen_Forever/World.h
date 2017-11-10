@@ -10,12 +10,13 @@ class Game;
 class GameObject;
 class ResourceHolder;
 class Controller;
+class Message;
 
 class World : public Listener
 {
 public:
 	World(Game* _Game);
-	~World() {};
+	~World();
 	
 	virtual void Tick(sf::Time _DeltaTime);
 	virtual void RenderTick(sf::RenderWindow* _RenderWindow);
@@ -25,9 +26,8 @@ public:
 
 	virtual std::shared_ptr<GameObject> GetWorldRoot() { return mWorldRoot; }
 	virtual std::shared_ptr<ResourceHolder> GetResourceHolder() { return mResourceHolder; }
-	virtual void AddGlobalReferenceToObject(std::shared_ptr<GameObject> _GameObject, int _Layer);
 
-private:
+protected:
 	void Initialize() {};
 
 	virtual void CheckControls(int _OverrideControl = -1);
@@ -37,7 +37,5 @@ private:
 	std::shared_ptr<GameObject> mWorldRoot;
 
 	std::shared_ptr<ResourceHolder> mResourceHolder;
-
-	std::vector<std::vector<std::shared_ptr<GameObject>>> mGameObjects;
 
 };

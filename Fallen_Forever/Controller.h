@@ -12,7 +12,7 @@ public:
 	void SetParent(GameObject* _Parent) { mParent = _Parent; }
 	void ControllerTick() {};
 
-private:
+protected:
 	GameObject* mParent;
 
 };

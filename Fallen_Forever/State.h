@@ -7,7 +7,7 @@
 
 class State
 {
-private:
+protected:
 	//std::vector<Resource> mResources;
 	//Resources* mTextureCtrl;
 	sf::RenderWindow& mWindow;

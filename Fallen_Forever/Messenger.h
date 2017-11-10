@@ -14,7 +14,7 @@ public:
 	virtual void AddListener(Listener* _Listener);
 	virtual void RemoveListener(Listener* _Listener);
 	virtual void ReceiveMessage(std::unique_ptr<Message> _Message);
-private:
+protected:
 	std::vector<Listener*> mListeners;
 	std::queue<std::unique_ptr<Message>> mMessageQueue;
 	std::mutex mWritingMessageLock;

@@ -19,7 +19,7 @@ template<typename Resource, typename Identifier>
 
 class Resources
 {
-private:
+protected:
 	void AddResource(Identifier _ID, const std::string& _Filename);
 
 	std::map<Identifier, std::unique_ptr<Resource>> mResourceMap;

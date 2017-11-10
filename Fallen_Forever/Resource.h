@@ -4,7 +4,7 @@
 
 class Resource
 {
-private:
+protected:
 	//Resources* mResourceCtrl;
 
 	std::string mResourceName;

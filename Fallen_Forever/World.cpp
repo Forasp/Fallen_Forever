@@ -9,10 +9,14 @@ World::World(Game* _Game)
 {
 	mGame = _Game;
 
-	mGameObjects.resize(NUMBER_OF_LAYERS);
-	mGame->GetMessenger("KeyEvents").get()->AddListener(this);
+	AttachToMessenger(mGame->GetMessenger("KeyEvents"));
+	AttachToMessenger(mGame->GetMessenger("GameEvents"));
+	mWorldRoot = std::make_shared<GameObject>();
+}
 
-	// Construct our world here.
+World::~World()
+{
+
 }
 
 /// <summary> 
@@ -20,13 +24,7 @@ World::World(Game* _Game)
 /// </summary>
 void World::RenderTick(sf::RenderWindow* _RenderWindow)
 {
-	for (std::vector<std::shared_ptr<GameObject>> goVector : mGameObjects)
-	{
-		for (std::shared_ptr<GameObject> go : goVector)
-		{
-			go.get()->RenderTick(_RenderWindow);
-		}
-	}
+	// Implementation moved to Game
 }
 
 /// <summary> 
@@ -71,7 +69,10 @@ void World::ReadMessage(Message* _Message)
 		CheckControls(_Message->GetMessageDouble());
 		break;
 	case MESSAGE_TYPE_DOUBLE:
-
+		if (_Message->GetMessageDouble() == COLLISION_WITH_SELF)
+		{
+			mGame->QueueMessage("GlobalEvents", std::make_unique<Message>(MESSAGE_TYPE_DOUBLE, RESTART_LEVEL));
+		}
 		break;
 	case MESSAGE_TYPE_STRING:
 
@@ -80,31 +81,4 @@ void World::ReadMessage(Message* _Message)
 
 		break;
 	}
-}
-
-/// <summary> 
-/// Adds a reference to a game object into our rendering list
-/// </summary>
-void World::AddGlobalReferenceToObject(std::shared_ptr<GameObject> _GameObject, int _Layer)
-{
-	// Early out if invalid layer or _GameObject is null pointer
-	if (_Layer >= NUMBER_OF_LAYERS || _GameObject == nullptr)
-	{
-		return;
-	}
-	
-	// Early out if matching game object found
-	for (std::vector<std::shared_ptr<GameObject>> outer_iterator : mGameObjects)
-	{
-		for (std::shared_ptr<GameObject> inner_iterator : outer_iterator)
-		{
-			if (inner_iterator == _GameObject)
-			{
-				return;
-			}
-		}
-	}
-
-	// Add object to appropriate layer.
-	mGameObjects[_Layer].push_back(_GameObject);
 }
