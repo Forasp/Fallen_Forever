@@ -1,11 +1,5 @@
-﻿  Game.cpp
-c:\users\timth\source\repos\fallen_forever\fallen_forever\game.cpp(261): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  main.cpp
-  World.cpp
+﻿  World.cpp
+c:\users\timth\source\repos\fallen_forever\fallen_forever\world.cpp(70): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
   Messenger.cpp
-  Listener.cpp
-  GameThreadUnsafeScope.cpp
-  GameObject.cpp
+  Generating Code...
   Fallen_Forever.vcxproj -> C:\Users\timth\source\repos\Fallen_Forever\Debug\Fallen_Forever.exe
