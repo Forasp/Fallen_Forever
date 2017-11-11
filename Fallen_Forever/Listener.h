@@ -9,7 +9,7 @@ class Listener
 {
 public:
 	void AttachToMessenger(std::shared_ptr<Messenger> _Messenger);
-	virtual void ReadMessage(Message* _Message) {};
+	virtual void ReadMessage(Message* _Message) = 0;
 protected:
 	~Listener();
 	std::vector<std::shared_ptr<Messenger>> mAttachedMessengers;

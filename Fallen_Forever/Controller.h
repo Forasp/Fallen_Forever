@@ -2,17 +2,17 @@
 #include "Listener.h"
 
 class GameObject;
+class Game;
 
 class Controller : public Listener
 {
 public:
-	Controller(GameObject* _Parent) { mParent = _Parent; }
+	Controller(GameObject* _Object, Game* _Game = nullptr) { mObject = _Object; mGame = _Game; }
 	~Controller() {};
 
-	void SetParent(GameObject* _Parent) { mParent = _Parent; }
-	void ControllerTick() {};
+	virtual void ControllerTick() = 0;
 
 protected:
-	GameObject* mParent;
-
+	GameObject* mObject;
+	Game* mGame;
 };

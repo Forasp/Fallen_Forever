@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Message.h"
 #include "GameThreadUnsafeScope.h"
+#include "Controller.h"
 
 GameObject::~GameObject()
 {
@@ -43,5 +44,14 @@ void GameObject::Tick(sf::Time _DeltaTime)
 	for (std::shared_ptr<GameObject> it : mChildren)
 	{
 		it->Tick(_DeltaTime);
+	}
+}
+
+void GameObject::ReadMessage(Message* _Message)
+{
+	HandleMessage(_Message);
+	if (mController != nullptr)
+	{
+		mController->ReadMessage(_Message);
 	}
 }

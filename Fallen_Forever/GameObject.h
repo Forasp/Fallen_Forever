@@ -11,6 +11,7 @@
 
 class Controller;
 class Game;
+class Message;
 
 class GameObject : public Listener, public sf::Transformable
 {
@@ -26,6 +27,8 @@ public:
 	virtual std::pair<double, double> GetPosition() { return mPosition; }
 	virtual std::pair<double, double> GetVelocity() { return mVelocity; }
 	virtual std::pair<double, double> GetSize() { return mSize; }
+	virtual void HandleMessage(Message* _Message) {}
+	void ReadMessage(Message* _Message);
 
 protected:
 	std::pair<double, double> mPosition;				// The object's position
