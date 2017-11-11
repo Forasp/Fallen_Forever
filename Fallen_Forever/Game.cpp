@@ -12,6 +12,9 @@
 Game::Game(sf::RenderWindow* _RenderWindow)
 {
 	InitializeGame(_RenderWindow);
+
+	AttachToMessenger(GetMessenger("KeyEvents"));
+	AttachToMessenger(GetMessenger("GlobalEvents"));
 }
 
 Game::~Game()

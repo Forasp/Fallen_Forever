@@ -70,10 +70,6 @@ void World::ReadMessage(Message* _Message)
 		CheckControls(_Message->GetMessageDouble());
 		break;
 	case MESSAGE_TYPE_DOUBLE:
-		if (_Message->GetMessageDouble() == COLLISION_WITH_SELF)
-		{
-			mGame->QueueMessage("GlobalEvents", std::make_unique<Message>(MESSAGE_TYPE_DOUBLE, RESTART_LEVEL));
-		}
 		break;
 	case MESSAGE_TYPE_STRING:
 
