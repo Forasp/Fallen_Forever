@@ -36,7 +36,7 @@ void Messenger::RemoveListener(Listener* _Listener)
 /// <summary> 
 /// Receive a message and distribute to all listeners.
 /// </summary>
-void Messenger::ReceiveMessage(std::unique_ptr<Message> _Message)
+void Messenger::QueueMessage(std::shared_ptr<Message> _Message)
 {
 	// lock the queue when pushing or popping.
 	mWritingMessageLock.lock();

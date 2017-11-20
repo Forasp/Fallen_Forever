@@ -171,8 +171,8 @@
     <ClCompile Include="GameThreadUnsafeScope.cpp" />
     <ClCompile Include="Listener.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Message.cpp" />
     <ClCompile Include="Messenger.cpp" />
+    <ClCompile Include="MessengerSystem.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="State.cpp" />
@@ -186,6 +186,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GlobalDefines.h" />
     <ClInclude Include="GameThreadUnsafeScope.h" />
+    <ClInclude Include="MessengerSystem.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="Messenger.h" />

@@ -11,6 +11,7 @@ class World;
 class Messenger;
 class Message;
 class GameObject;
+class MessengerSystem;
 
 class Game : public Listener
 {
@@ -31,7 +32,7 @@ public:
 
 	std::shared_ptr<Messenger> GetMessenger(std::string _MessengerName);
 
-	void QueueMessage(std::string _MessengerName, std::unique_ptr<Message> _Message);
+	void QueueMessage(std::string _MessengerName, std::shared_ptr<Message> _Message);
 
 	bool IsActive() { return (mActive || mPhysicsThreadActive || mRenderingThreadActive || mControllerThreadActive); }
 
@@ -46,10 +47,11 @@ protected:
 	void InitializeGame(sf::RenderWindow* _RenderWindow);
 
 	std::shared_ptr<World> mCurrentWorld;
-	std::map<std::string, std::shared_ptr<Messenger>> mMessengers;
 	std::queue<std::pair<std::string, std::unique_ptr<Message>>> mMessageQueue;
 
 	sf::RenderWindow* mRenderWindow;
+
+	std::shared_ptr<MessengerSystem> mMessengerSystem;
 
 	sf::Clock mClock;
 

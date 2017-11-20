@@ -4,6 +4,7 @@
 #include "SFML/System/Sleep.hpp"
 #include "Message.h"
 #include "Messenger.h"
+#include "MessengerSystem.h"
 #include "GameObject.h"
 #include <cassert>
 #include <iostream>
@@ -224,18 +225,8 @@ void Game::MessagingThread()
 		mLastMessagingTime = CurrentTime;
 
 		// -TODO- Weigh whether these warrant two independant threads.
-		// While the message queue is not empty, give messages to messengers.
-		while (mMessageQueue.size() > 0)
-		{
-			GetMessenger(mMessageQueue.front().first).get()->ReceiveMessage(std::move(mMessageQueue.front().second));
-			mMessageQueue.pop();
-		}
-
-		// For all messengers, tick.
-		for (std::pair<std::string, std::shared_ptr<Messenger>> it : mMessengers)
-		{
-			it.second.get()->TickMessenger();
-		}
+		// While the message queue is not empty, give messages to messengers.'
+		mMessengerSystem->TickMessengers();
 
 		mMessengerTicking = false;
 
@@ -298,20 +289,12 @@ void Game::CheckControls(int _OverrideControl)
 /// </summary>
 std::shared_ptr<Messenger> Game::GetMessenger(std::string _MessengerName)
 {
-	std::map<std::string, std::shared_ptr<Messenger>>::iterator Result = mMessengers.find(_MessengerName);
-
-	if (Result == mMessengers.end())
-	{
-		mMessengers.emplace(std::make_pair(_MessengerName, std::make_shared<Messenger>()));
-		Result = mMessengers.find(_MessengerName);
-	}
-
-	return Result->second;
+	return mMessengerSystem->GetMessenger(_MessengerName);
 }
 
-void Game::QueueMessage(std::string _MessengerName, std::unique_ptr<Message> _Message)
+void Game::QueueMessage(std::string _MessengerName, std::shared_ptr<Message> _Message)
 {
-	mMessageQueue.push(std::make_pair(_MessengerName, std::move(_Message)));
+	mMessengerSystem->QueueMessage(_MessengerName, _Message);
 }
 
 void Game::AddObjectToRenderer(GameObject* _GameObject, int _Layer)
@@ -343,6 +326,7 @@ std::shared_ptr<World> Game::GetNewWorld()
 void Game::InitializeGame(sf::RenderWindow* _RenderWindow)
 {
 	mActive = true;
+	mMessengerSystem = std::make_shared<MessengerSystem>();
 	mBlockAllThreads = false;
 	mRenderWindow = _RenderWindow;
 	mObjectsToRender.resize(NUMBER_OF_LAYERS);

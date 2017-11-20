@@ -60,9 +60,6 @@
     <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Message.cpp">
-      <Filter>Source Files\Messenger</Filter>
-    </ClCompile>
     <ClCompile Include="Messenger.cpp">
       <Filter>Source Files\Messenger</Filter>
     </ClCompile>
@@ -77,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="GameThreadUnsafeScope.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MessengerSystem.cpp">
+      <Filter>Source Files\Messenger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="GameThreadUnsafeScope.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MessengerSystem.h">
+      <Filter>Header Files\Messenger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
