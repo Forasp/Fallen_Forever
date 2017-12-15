@@ -1,14 +1,19 @@
 #pragma once
 #include <string>
 
-#define MESSAGE_TYPE_INVALID -1
-#define MESSAGE_TYPE_STRING 1
-#define MESSAGE_TYPE_DOUBLE 2
-#define MESSAGE_TYPE_INPUT  3
-#define MESSAGE_TYPE_QUIT   4
+#define MESSAGE_TYPE_INVALID	-1
+#define MESSAGE_TYPE_STRING		1
+#define MESSAGE_TYPE_DOUBLE		2
+#define MESSAGE_TYPE_INPUT		3
+#define MESSAGE_TYPE_QUIT		4
+#define MESSAGE_TYPE_MOUSE		5
+#define MESSAGE_TYPE_FULL		6
+#define MESSAGE_TYPE_EVENT		7
+#define MESSAGE_TYPE_COLLISION_PTR		8
 
 #define COLLISION_WITH_SELF 1
 #define RESTART_LEVEL 2
+#define TICK_EVENT 3
 
 class Message
 {
@@ -56,6 +61,9 @@ public:
 	Message(int _MessageType, int _MessageInt, double _MessageDouble, std::pair<double, double> _MessageDoublePair, std::string _MessageString, bool _Consumable = false) :
 		mMessageType(_MessageType), mMessageInt(_MessageInt), mMessageDouble(_MessageDouble), mMessageDoublePair(_MessageDoublePair), mMessageString(_MessageString), mConsumable(_Consumable), mConsumed(false) {}
 
+	// New, not fully tested. TODO - Add new constructors for any combo with this parameter.
+	Message(int _MessageType, void* _VoidPtr, bool _Consumable = false) :
+		mMessageType(_MessageType), mMessageVoidPtr(_VoidPtr), mConsumable(_Consumable), mConsumed(false) {}
 
 	void Consume()
 	{
@@ -76,6 +84,9 @@ public:
 	std::pair<double, double> GetMessageDoublePair() { return mMessageDoublePair; }
 	std::string GetMessageString() { return mMessageString; }
 
+	// New, not fully tested. 
+	void* GetMessageVoidPtr() { return mMessageVoidPtr; }
+
 protected:
 	bool mConsumed;
 	bool mConsumable;
@@ -85,4 +96,7 @@ protected:
 	double mMessageDouble;
 	std::pair<double, double> mMessageDoublePair;
 	std::string mMessageString;
+
+	// New, not fully tested.
+	void* mMessageVoidPtr;
 };
