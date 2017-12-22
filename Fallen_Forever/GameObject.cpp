@@ -22,6 +22,7 @@ void GameObject::RenderTick(sf::RenderWindow* _RenderWindow)
 		{
 			return;
 		}
+
 		mGame->AddObjectToRenderer(this, mLayer);
 		mAddedToRenderer = true;
 	}
@@ -54,4 +55,36 @@ void GameObject::ReadMessage(Message* _Message)
 	{
 		mController->ReadMessage(_Message);
 	}
+}
+
+
+void GameObject::ControllerTick(sf::Time _DeltaTime)
+{
+	if (mController != nullptr)
+	{
+		mController->ControllerTick();
+	}
+}
+
+void GameObject::RemoveChild(GameObject* _GameObject)
+{
+	for (int i = 0; i < mChildren.size(); i++)
+	{
+		if (mChildren[i].get() == _GameObject)
+		{
+			GameThreadUnsafeScope ScopeLock(mGame);
+			mChildren.erase(mChildren.begin() + i);
+			return;
+		}
+	}
+
+	if (mParent != nullptr)
+	{
+		mParent->RemoveChild(_GameObject);
+	}
+}
+
+void GameObject::AddChild(std::shared_ptr<GameObject> _GameObject)
+{
+	mChildren.push_back(_GameObject);
 }

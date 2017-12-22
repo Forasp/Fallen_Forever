@@ -10,9 +10,125 @@ void Collidable::CheckCollision(Collidable* _Collidable)
 		return;
 	}
 
-	// -TODO- Update to handle rotation.
-	if ((fabs(_Collidable->mPositionPtr->first - mPositionPtr->first)  < _Collidable->mSizePtr->first + mSizePtr->first) &&
-		(fabs(_Collidable->mPositionPtr->second - mPositionPtr->second) < _Collidable->mSizePtr->second + mSizePtr->second))
+	double ThisRadius = RadiusFromSize(mSizePtr);
+	double OtherRadius = RadiusFromSize(_Collidable->mSizePtr);
+
+	// If distance is greater than the two radii, then there can be no collision.
+	if (DistanceBetweenPoints(mPositionPtr, _Collidable->mPositionPtr) > ThisRadius + OtherRadius)
+	{
+		return;
+	}
+
+	// Move on to pixel perfect collision.
+	std::pair<int, int> FoundCoordinates1 = std::make_pair(int(0), int(0));
+	std::pair<int, int> FoundCoordinates2 = std::make_pair(int(0), int(0));
+	int CoordinateScale = 2;
+	bool Collided = true;
+
+	while (CoordinateScale <= 32 && Collided)
+	{
+		Collided = false;
+
+		for (int x = 0; x < 2; x++)
+		{
+			for (int y = 0; y < 2; y++)
+			{
+				if (Collided)
+				{
+					continue;
+				}
+
+				bool Collidable = false;
+
+				switch (CoordinateScale)
+				{
+					case 2:
+						Collidable = mCollisionAreaXL[x + FoundCoordinates1.first][y + FoundCoordinates1.second];
+						break;
+					case 4:
+						Collidable = mCollisionAreaL[x + FoundCoordinates1.first][y + FoundCoordinates1.second];
+						break;
+					case 8:
+						Collidable = mCollisionAreaM[x + FoundCoordinates1.first][y + FoundCoordinates1.second];
+						break;
+					case 16:
+						Collidable = mCollisionAreaS[x + FoundCoordinates1.first][y + FoundCoordinates1.second];
+						break;
+					case 32:
+						Collidable = mCollisionAreaXS[x + FoundCoordinates1.first][y + FoundCoordinates1.second];
+						break;
+				}
+
+				if (Collidable)
+				{
+					// vector between center of block and center of image
+					std::pair<double, double> TempVector = std::make_pair(double((((x + FoundCoordinates1.first) / double(CoordinateScale - 1)) - 0.5f) * mSizePtr->first),
+																		  double((((y + FoundCoordinates1.second) / double(CoordinateScale - 1)) - 0.5f) * mSizePtr->second));
+					// Rotate vector
+					std::pair<double, double> RotatedVector = RotateVector(&TempVector, *mRotationPtr);
+
+					// Update position to global
+					RotatedVector.first += mPositionPtr->first;
+					RotatedVector.second += mPositionPtr->second;
+
+					// Check Distance Against other item's pixels
+					for (int x2 = 0; x2 < 2; x++)
+					{
+						for (int y2 = 0; y2 < 2; y++)
+						{
+							if (Collided)
+							{
+								continue;
+							}
+
+							bool Collidable2 = false;
+
+							switch (CoordinateScale)
+							{
+								case 2:
+									Collidable2 = _Collidable->mCollisionAreaXL[x2 + FoundCoordinates2.first][y2 + FoundCoordinates2.second];
+									break;
+								case 4:
+									Collidable2 = _Collidable->mCollisionAreaL[x2 + FoundCoordinates2.first][y2 + FoundCoordinates2.second];
+									break;
+								case 8:
+									Collidable2 = _Collidable->mCollisionAreaM[x2 + FoundCoordinates2.first][y2 + FoundCoordinates2.second];
+									break;
+								case 16:
+									Collidable2 = _Collidable->mCollisionAreaS[x2 + FoundCoordinates2.first][y2 + FoundCoordinates2.second];
+									break;
+								case 32:
+									Collidable2 = _Collidable->mCollisionAreaXS[x2 + FoundCoordinates2.first][y2 + FoundCoordinates2.second];
+									break;
+							}
+
+							if (Collidable2)
+							{
+								// vector between center of block and center of image
+								std::pair<double, double> TempVector2 = std::make_pair(double((((x2 + FoundCoordinates2.first) / double(CoordinateScale - 1)) - 0.5) * _Collidable->mSizePtr->first),
+																					   double((((y2 + FoundCoordinates2.second) / double(CoordinateScale - 1)) - 0.5) * _Collidable->mSizePtr->second));
+								// Rotate vector
+								std::pair<double, double> RotatedVector2 = RotateVector(&TempVector2, *_Collidable->mRotationPtr);
+
+								// Update position to global
+								RotatedVector2.first += _Collidable->mPositionPtr->first;
+								RotatedVector2.second += _Collidable->mPositionPtr->second;
+
+								if (DistanceBetweenPoints(&RotatedVector, &RotatedVector2) < (ThisRadius / double(CoordinateScale)) + (OtherRadius / double(CoordinateScale)))
+								{
+									Collided = true;
+									FoundCoordinates1 = std::make_pair(x * CoordinateScale, y * CoordinateScale);
+									FoundCoordinates2 = std::make_pair(x2 * CoordinateScale, y2 * CoordinateScale);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (Collided)
 	{
 		_Collidable->Collide(this);
 
@@ -53,5 +169,29 @@ void Collidable::ReadMessage(Message* _Message)
 	{
 		Collidable* CollidablePtr = dynamic_cast<Collidable*>(static_cast<GameObject*>(_Message->GetMessageVoidPtr()));
 		CheckCollision(CollidablePtr);
+	}
+}
+
+void Collidable::PopulateCollisionAreas(sf::Sprite* _Sprite)
+{
+	sf::Image TempImage;
+	TempImage = _Sprite->getTexture()->copyToImage();
+
+	for (unsigned int x = 0; x < TempImage.getSize().x; x++)
+	{
+		for (unsigned int y = 0; y < TempImage.getSize().y; y++)
+		{
+			unsigned int ImageWidth = TempImage.getSize().x;
+			unsigned int ImageHeight = TempImage.getSize().y;
+
+			bool PixelCollidable = bool(TempImage.getPixel(x, y).a == 0u);
+
+			mCollisionAreaXS[x / (ImageWidth / 32)][y / (ImageHeight / 32)] |= PixelCollidable;
+			mCollisionAreaS[ x / (ImageWidth / 16)][y / (ImageHeight / 16)] |= PixelCollidable;
+			mCollisionAreaM[ x / (ImageWidth / 8)][ y / (ImageHeight / 8)]  |= PixelCollidable;
+			mCollisionAreaL[ x / (ImageWidth / 4)][ y / (ImageHeight / 4)]  |= PixelCollidable;
+			mCollisionAreaXL[x / (ImageWidth / 2)][ y / (ImageHeight / 2)]  |= PixelCollidable;
+		}
+
 	}
 }

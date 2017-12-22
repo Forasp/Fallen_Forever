@@ -13,22 +13,36 @@ class Controller;
 class Game;
 class Message;
 
-class GameObject : public Listener, public sf::Transformable
+class GameObject : public virtual Listener, public sf::Transformable
 {
 public:
-	GameObject() { mRenderStates = sf::RenderStates::Default; mAddedToRenderer = false; }
+	GameObject(Game* _Game, GameObject* _Parent = nullptr) { mRenderStates = sf::RenderStates::Default; mAddedToRenderer = false; mGame = _Game; mParent = _Parent;  mRotation = 0; }
+	GameObject() { mGame = nullptr; mParent = nullptr; };
 	~GameObject();
 	virtual void RenderTick(sf::RenderWindow* _RenderWindow);
 	virtual void Tick(sf::Time _DeltaTime);
-	virtual void ControllerTick(sf::Time _DeltaTime) {}
-	virtual void SetController(Controller* _Controller) {}
-	virtual Controller* GetController() { return mController; }
+	virtual void ControllerTick(sf::Time _DeltaTime);
+	virtual void SetController(std::shared_ptr<Controller> _Controller) { mController = _Controller; }
+	virtual std::shared_ptr<Controller> GetController() { return mController; }
 	virtual void SetTexResources(TextureResources* _ResourceHolder);
 	virtual std::pair<double, double> GetPosition() { return mPosition; }
 	virtual std::pair<double, double> GetVelocity() { return mVelocity; }
 	virtual std::pair<double, double> GetSize() { return mSize; }
+	virtual double GetRotation() { return mRotation; }
 	virtual void HandleMessage(Message* _Message) {}
 	void ReadMessage(Message* _Message);
+	virtual void SetPosition(std::pair<double, double> _Position) { mPosition = _Position; }
+	virtual void SetRotation(double _Rotation) { mRotation = _Rotation; }
+	virtual void AddVelocity(std::pair<double, double> _Velocity) 
+	{ 
+		mVelocity.first += _Velocity.first; 
+		mVelocity.second += _Velocity.second;
+	}
+	virtual void RemoveChild(GameObject* _GameObject);
+	virtual void AddChild(std::shared_ptr<GameObject> _GameObject);
+	//virtual void InitializeGameObject() = 0;
+
+	bool mAddedToRenderer;								// Whether or not the object has been handed to the renderer yet.
 
 protected:
 	std::pair<double, double> mPosition;				// The object's position
@@ -41,7 +55,6 @@ protected:
 	double mHardness;									// The Object's Resistance
 	
 	bool mPhysical;										// Whether or not the Object can collide.
-	bool mAddedToRenderer;								// Whether or not the object has been handed to the renderer yet.
 
 	int  mLayer;										// The Object's layer (for rendering and physics)
 
@@ -54,6 +67,7 @@ protected:
 
 	Game* mGame;										// A Pointer to the Game.
 
-protected:
-	Controller* mController;
+	GameObject* mParent;								// A Pointer to the Parent Object
+
+	std::shared_ptr<Controller> mController;
 };

@@ -1,15 +1,3 @@
-﻿  Collidable.cpp
-  Generating Code...
-  Compiling...
-  main.cpp
-  World.cpp
-c:\users\tim powell\source\repos\fallen_forever\fallen_forever\world.cpp(70): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-  Messenger.cpp
-  GameThreadUnsafeScope.cpp
-  GameObject.cpp
-  Game.cpp
-c:\users\tim powell\source\repos\fallen_forever\fallen_forever\game.cpp(255): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-  Generating Code...
-     Creating library C:\Users\Tim Powell\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.lib and object C:\Users\Tim Powell\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.exp
-sfml-main-d.lib(MainWin32.obj) : warning LNK4099: PDB 'sfml-main.pdb' was not found with 'sfml-main-d.lib(MainWin32.obj)' or at 'C:\Users\Tim Powell\Source\Repos\Fallen_Forever\Debug\sfml-main.pdb'; linking object as if no debug info
-  Fallen_Forever.vcxproj -> C:\Users\Tim Powell\Source\Repos\Fallen_Forever\Debug\Fallen_Forever.exe
+﻿  GameObject.cpp
+c:\users\tim powell\source\repos\fallen_forever\fallen_forever\gameobject.cpp(71): warning C4018: '<': signed/unsigned mismatch
+  Fallen_Forever.vcxproj -> C:\Users\Tim Powell\source\repos\Fallen_Forever\Debug\Fallen_Forever.exe
