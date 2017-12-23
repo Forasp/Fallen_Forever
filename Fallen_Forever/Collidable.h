@@ -46,7 +46,7 @@ inline double DistanceBetweenPoints(const std::pair<double, double>* _Position1,
 
 inline double RadiusFromSize(const std::pair<double, double>* _Size)
 {
-	return sqrt((_Size->first * _Size->first) + (_Size->second * _Size->second));
+	return sqrt(((_Size->first / 2) * (_Size->first / 2)) + ((_Size->second / 2) * (_Size->second / 2)));
 }
 
 inline std::pair<double, double> RotateVector(std::pair<double, double>* _InVector, double _RotationInDegrees)

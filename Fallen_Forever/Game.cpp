@@ -77,29 +77,8 @@ void Game::PhysicsThread()
 			mCurrentWorld.get()->Tick(Elapsedtime);
 		}
 
-		// -TODO- Move collision detection to its own thread.
-		// -TODO- Clean up implementation.
-		for (unsigned int i = 0; i < mObjectsToRender.size(); i++)
-		{
-			for (unsigned int j = 0; j < mObjectsToRender[i].size(); j++)
-			{
-				Collidable* CollidableObject1;
-				if ((CollidableObject1 = dynamic_cast<Collidable*>(mObjectsToRender[i][j])) != nullptr)
-				{
-					for (unsigned int k = i; k < mObjectsToRender.size(); k++)
-					{
-						for (unsigned int l = (k == i) ? j + 1 : 0; l < mObjectsToRender[k].size(); l++)
-						{
-							Collidable* CollidableObject2;
-							if ((CollidableObject2 = dynamic_cast<Collidable*>(mObjectsToRender[k][l])) != nullptr)
-							{
-								CollidableObject1->CheckCollision(CollidableObject2);
-							}
-						}
-					}
-				}
-			}
-		}
+		// Queue tick message
+		QueueMessage("Collision", std::make_unique<Message>(Message(MESSAGE_TYPE_EVENT, (double)TICK_EVENT)));
 
 		mPhysicTicking = false;
 
@@ -300,6 +279,11 @@ void Game::QueueMessage(std::string _MessengerName, std::shared_ptr<Message> _Me
 void Game::AddObjectToRenderer(GameObject* _GameObject, int _Layer)
 {
 	assert(_Layer < NUMBER_OF_LAYERS);
+
+	if (dynamic_cast<Collidable*>(_GameObject) != nullptr)
+	{
+		_GameObject->AttachToMessenger(GetMessenger("Collision"));
+	}
 
 	mObjectsToRender[_Layer].push_back(_GameObject);
 }

@@ -22,7 +22,6 @@ void GameObject::RenderTick(sf::RenderWindow* _RenderWindow)
 		{
 			return;
 		}
-
 		mGame->AddObjectToRenderer(this, mLayer);
 		mAddedToRenderer = true;
 	}

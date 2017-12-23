@@ -4,8 +4,11 @@
 
 void GameThreadUnsafeScope::Lock(Game* _Game)
 {
-	mGamePointer = _Game;
-	mGamePointer->LockAllThreads();
+	if (_Game)
+	{
+		mGamePointer = _Game;
+		mGamePointer->LockAllThreads();
+	}
 }
 
 void GameThreadUnsafeScope::Unlock()

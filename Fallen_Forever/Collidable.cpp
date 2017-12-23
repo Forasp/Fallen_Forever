@@ -5,12 +5,12 @@
 
 void Collidable::CheckCollision(Collidable* _Collidable)
 {
-	if (mSizePtr == nullptr || mPositionPtr == nullptr || _Collidable->mSizePtr == nullptr || _Collidable->mPositionPtr == nullptr)
+	if (mSizePtr == nullptr || mPositionPtr == nullptr || _Collidable->mSizePtr == nullptr || _Collidable->mPositionPtr == nullptr || _Collidable == this)
 	{
 		return;
 	}
 
-	double ThisRadius = RadiusFromSize(mSizePtr);
+ 	double ThisRadius = RadiusFromSize(mSizePtr);
 	double OtherRadius = RadiusFromSize(_Collidable->mSizePtr);
 
 	// If distance is greater than the two radii, then there can be no collision.
@@ -72,9 +72,9 @@ void Collidable::CheckCollision(Collidable* _Collidable)
 					RotatedVector.second += mPositionPtr->second;
 
 					// Check Distance Against other item's pixels
-					for (int x2 = 0; x2 < 2; x++)
+					for (int x2 = 0; x2 < 2; x2++)
 					{
-						for (int y2 = 0; y2 < 2; y++)
+						for (int y2 = 0; y2 < 2; y2++)
 						{
 							if (Collided)
 							{
@@ -114,11 +114,11 @@ void Collidable::CheckCollision(Collidable* _Collidable)
 								RotatedVector2.first += _Collidable->mPositionPtr->first;
 								RotatedVector2.second += _Collidable->mPositionPtr->second;
 
-								if (DistanceBetweenPoints(&RotatedVector, &RotatedVector2) < (ThisRadius / double(CoordinateScale)) + (OtherRadius / double(CoordinateScale)))
+								if (DistanceBetweenPoints(&RotatedVector, &RotatedVector2) * 1.25 < (ThisRadius / 2 / double(CoordinateScale)) + (OtherRadius / 2 / double(CoordinateScale)))
 								{
 									Collided = true;
-									FoundCoordinates1 = std::make_pair(x * CoordinateScale, y * CoordinateScale);
-									FoundCoordinates2 = std::make_pair(x2 * CoordinateScale, y2 * CoordinateScale);
+									FoundCoordinates1 = std::make_pair(x * 2 + (FoundCoordinates1.first * 2), y * 2 + (FoundCoordinates1.second * 2));
+									FoundCoordinates2 = std::make_pair(x2 * 2 + (FoundCoordinates2.first * 2), y2 * 2 + (FoundCoordinates2.second * 2));
 								}
 							}
 						}
@@ -126,14 +126,16 @@ void Collidable::CheckCollision(Collidable* _Collidable)
 				}
 			}
 		}
+
+		CoordinateScale *= 2;
 	}
 
-	if (Collided)
+ 	if (Collided)
 	{
 		_Collidable->Collide(this);
 
 		// Collide can be implemented to delete pointers, always check again.
-		Collide(_Collidable != nullptr ? _Collidable : nullptr);
+  		Collide(_Collidable != nullptr ? _Collidable : nullptr);
 	}
 }
 
